@@ -1,0 +1,17 @@
+# Environments
+.env
+.venv
+env/
+venv/
+__pycache__/
+
+# Docker
+docker-compose.override.yml
+
+# Database
+pgdata/
+redis_data/
+
+# OS
+.DS_Store
+Thumbs.db
