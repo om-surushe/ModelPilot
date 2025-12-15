@@ -5,7 +5,7 @@ services:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: modelpilot-proxy
     ports:
-      - "4000:4000"
+      - "4001:4000"
     volumes:
       - ./config.yaml:/app/config.yaml
     environment:
@@ -14,7 +14,8 @@ services:
       - STORE_MODEL_IN_DB=True
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    command: ["--config", "/app/config.yaml", "--detailed_debug"]
+    # The official image entrypoint handles DB migration if DATABASE_URL is set
+    command: [ "--detailed_debug", "--port", "4000" ]
     depends_on:
       - db
       - redis
@@ -28,12 +29,12 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-      - ${PG_DATA_PATH}:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -44,5 +45,9 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ${REDIS_DATA_PATH}:/data
+      - redis_data:/data
     restart: always
+
+volumes:
+  pg_data:
+  redis_data:
