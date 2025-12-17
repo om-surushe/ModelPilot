@@ -1,0 +1,13 @@
+model_list:
+  - model_name: "groq/*"
+    litellm_params:
+      model: "groq/*"
+      api_key: os.environ/GROQ_API_KEY
+  - model_name: "mistral/*"
+    litellm_params:
+      model: "mistral/*"
+      api_key: os.environ/MISTRAL_API_KEY
+  - model_name: "gemini/*"
+    litellm_params:
+      model: "gemini/*"
+      api_key: os.environ/GEMINI_API_KEY

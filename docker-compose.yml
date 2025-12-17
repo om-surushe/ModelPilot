@@ -5,17 +5,19 @@ services:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: modelpilot-proxy
     ports:
-      - "4001:4000"
+      - "${LITELLM_PORT:-4001}:4000"
     volumes:
-      - ./config.yaml:/app/config.yaml
+      - ${CONFIG_PATH:-./config.yaml}:/app/config.yaml
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
       - STORE_MODEL_IN_DB=True
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    # The official image entrypoint handles DB migration if DATABASE_URL is set
-    command: [ "--detailed_debug", "--port", "4000" ]
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    command: [ "--detailed_debug", "--port", "4000", "--config", "/app/config.yaml" ]
     depends_on:
       - db
       - redis
@@ -29,9 +31,9 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - ${POSTGRES_DATA_PATH:-./postgres_data}:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
@@ -43,11 +45,7 @@ services:
     image: redis:alpine
     container_name: modelpilot-redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
-      - redis_data:/data
+      - ${REDIS_DATA_PATH:-./redis_data}:/data
     restart: always
-
-volumes:
-  pg_data:
-  redis_data:
