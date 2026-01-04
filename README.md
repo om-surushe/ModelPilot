@@ -1,5 +1,9 @@
 # ModelPilot 🚀
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Config Validation](https://github.com/om-surushe/ModelPilot/actions/workflows/ci.yml/badge.svg)](https://github.com/om-surushe/ModelPilot/actions/workflows/ci.yml)
+
+
 Smart LLM Routing & Proxy Server (Powered by LiteLLM).
 
 ## Features
@@ -134,3 +138,11 @@ REDIS_PORT=6380
 ```bash
 docker compose exec db psql -U postgres -d litellm
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
